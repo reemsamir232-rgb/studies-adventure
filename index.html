@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مغامرات بطل الدراسات</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:linear-gradient(#dff7ed,#fff0c7);color:#244436;text-align:center;min-height:100vh}
+header{background:#187a61;color:white;padding:28px 12px;border-radius:0 0 28px 28px}
+h1{font-size:27px;margin:8px}
+main{padding:18px;max-width:650px;margin:auto}
+.card{background:white;border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 4px 12px #0001}
+button{background:#f3ad32;color:#302009;border:0;border-radius:12px;padding:14px;font-size:17px;font-weight:bold;cursor:pointer;width:100%;margin:5px 0}
+button:hover{background:#ffd26e}
+.hidden{display:none}
+.option{background:#e7f4ec}
+#feedback{font-weight:bold;min-height:28px}
+</style>
+</head>
+<body>
+<header><h1>🗺️ مغامرات بطل الدراسات</h1><p>اتعلم والعب واكسب النجوم ⭐</p></header>
+<main>
+<section id="home">
+<h2>اختار مرحلتك الدراسية</h2>
+<div id="grades"></div>
+</section>
+<section id="game" class="hidden">
+<button onclick="home()">↩ رجوع للصفوف</button>
+<div class="card">
+<h2 id="gradeTitle"></h2>
+<p>🏆 نجومك: <span id="score">0</span></p>
+<p id="question"></p>
+<div id="answers"></div>
+<p id="feedback"></p>
+<button id="next" class="hidden" onclick="nextQuestion()">السؤال التالي ←</button>
+</div>
+</section>
+</main>
+<script>
+const grades=['الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي','الأول الإعدادي','الثاني الإعدادي','الثالث الإعدادي'];
+const questions=[
+{q:'ما عاصمة مملكة الشمال في مصر القديمة؟',a:['نخب','بوتو','منف'],c:1},
+{q:'ما شعار مملكة الجنوب؟',a:['زهرة اللوتس','نبات البردي','النخلة'],c:0},
+{q:'ما لون تاج مملكة الشمال؟',a:['الأبيض','الأحمر','الأزرق'],c:1}
+];
+let grade='',index=0,score=0;
+document.getElementById('grades').innerHTML=grades.map((g,i)=>'<div class="card"><h3>🎒 المرحلة '+(i+1)+'</h3><button onclick="start('+i+')">'+g+'</button></div>').join('');
+function start(i){
+grade=grades[i];index=0;score=0;
+document.getElementById('home').classList.add('hidden');
+document.getElementById('game').classList.remove('hidden');
+document.getElementById('gradeTitle').textContent=grade+' — تحدي تجريبي';
+show();
+}
+function show(){
+document.getElementById('score').textContent=score;
+document.getElementById('feedback').textContent='';
+document.getElementById('next').classList.add('hidden');
+if(index>=questions.length){
+document.getElementById('question').textContent='🎉 خلصت التحدي! حصلت على '+score+' من '+questions.length+' نجوم';
+document.getElementById('answers').innerHTML='';
+document.getElementById('next').textContent='العب مرة تانية';
+document.getElementById('next').classList.remove('hidden');
+return;
+}
+document.getElementById('next').textContent='السؤال التالي ←';
+let q=questions[index];
+document.getElementById('question').textContent='السؤال '+(index+1)+': '+q.q;
+document.getElementById('answers').innerHTML='';
+q.a.forEach((answer,i)=>{
+let b=document.createElement('button');
+b.className='option';b.textContent=answer;
+b.onclick=()=>choose(i);
+document.getElementById('answers').appendChild(b);
+});
+}
+function choose(i){
+let q=questions[index];
+document.querySelectorAll('.option').forEach(b=>b.disabled=true);
+if(i===q.c){score++;document.getElementById('feedback').textContent='✅ إجابة صحيحة! كسبت نجمة ⭐'}
+else{document.getElementById('feedback').textContent='❌ الإجابة الصحيحة: '+q.a[q.c]}
+document.getElementById('score').textContent=score;
+document.getElementById('next').classList.remove('hidden');
+}
+function nextQuestion(){if(index>=questions.length){index=0;score=0}else{index++}show()}
+function home(){document.getElementById('game').classList.add('hidden');document.getElementById('home').classList.remove('hidden')}
+</script>
+</body>
+</html>
